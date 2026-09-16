@@ -1,5 +1,4 @@
 <Solution>
-  <Project Path="GenAccERP.DataAcces/GenAccERP.DataAcces.csproj" Id="c0f7b403-8976-4a28-b973-a9f6be9f2fdd" />
   <Project Path="GenAccERP.DataAccess/GenAccERP.DataAccess.csproj" />
   <Project Path="GenAccERP/GenAccERP.csproj" />
 </Solution>
