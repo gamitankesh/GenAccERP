@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GenAccERP.DataAccess.Models;
 
+[ExcludeFromCodeCoverage]
 public partial class SalesDetail
 {
     public Guid SalesDetailId { get; set; }
