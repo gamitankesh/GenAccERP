@@ -1,5 +1,6 @@
+using System;
 using System.Linq;
-using GenAccERP.DataAccess.Entities;
+using GenAccERP.DataAccess.Models;
 
 namespace GenAccERP.DataAccess.Data
 {
@@ -7,36 +8,45 @@ namespace GenAccERP.DataAccess.Data
     {
         public static void Initialize(AppDbContext context)
         {
-            // Ensure database is created. For real projects prefer migrations.
+            // Ensure database is created. For real projects prefer migrations and Database.Migrate().
             context.Database.EnsureCreated();
 
-            if (context.Categories.Any())
+            // If item categories exist assume DB has been seeded
+            if (context.ItemCategories.Any())
             {
-                return;   // DB has been seeded
+                return;
             }
 
-            var categories = new Category[]
+            // Create an initial admin user to satisfy foreign key constraints
+            var admin = new AppUser
             {
-                new Category { Name = "General" },
-                new Category { Name = "Services" },
-                new Category { Name = "Products" }
+                Username = "admin",
+                Email = "admin@example.com",
+                Role = "Administrator",
+                CreatedDate = DateTime.UtcNow
             };
-
-            foreach (var c in categories)
-            {
-                context.Categories.Add(c);
-            }
+            context.AppUsers.Add(admin);
             context.SaveChanges();
 
-            var items = new Item[]
+            // Create categories
+            var categories = new ItemCategory[]
             {
-                new Item { Name = "Sample Item A", Description = "Seed item A", Price = 10.0M, CategoryId = categories[0].Id },
-                new Item { Name = "Sample Item B", Description = "Seed item B", Price = 20.5M, CategoryId = categories[2].Id }
+                new ItemCategory { CategoryName = "General", CreatedBy = admin.UserId },
+                new ItemCategory { CategoryName = "Services", CreatedBy = admin.UserId },
+                new ItemCategory { CategoryName = "Products", CreatedBy = admin.UserId }
             };
-            foreach (var i in items)
+
+            context.ItemCategories.AddRange(categories);
+            context.SaveChanges();
+
+            // Create sample item masters
+            var items = new ItemMaster[]
             {
-                context.Items.Add(i);
-            }
+                new ItemMaster { ItemNo = "ITM-001", ItemName = "Sample Item A", ItemDescription = "Seed item A", PurchasePrice = 5.00M, SalesPrice = 10.00M, CurrentStock = 100, CategoryId = categories[0].CategoryId, CreatedBy = admin.UserId },
+                new ItemMaster { ItemNo = "ITM-002", ItemName = "Sample Item B", ItemDescription = "Seed item B", PurchasePrice = 15.00M, SalesPrice = 25.00M, CurrentStock = 50, CategoryId = categories[2].CategoryId, CreatedBy = admin.UserId }
+            };
+
+            context.ItemMasters.AddRange(items);
             context.SaveChanges();
         }
     }
