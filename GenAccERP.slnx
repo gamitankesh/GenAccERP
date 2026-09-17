@@ -1,4 +1,8 @@
 <Solution>
   <Project Path="GenAccERP.DataAccess/GenAccERP.DataAccess.csproj" />
+  <Project Path="GenAccERP.WebApp/GenAccERP.WebApp.esproj">
+    <Build />
+    <Deploy />
+  </Project>
   <Project Path="GenAccERP/GenAccERP.API.csproj" />
 </Solution>
