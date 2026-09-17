@@ -14,4 +14,9 @@
     <ProjectReference Include="..\GenAccERP.DataAccess\GenAccERP.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Service\Interfaces\" />
+    <Folder Include="Service\Services\" />
+  </ItemGroup>
+
 </Project>
