@@ -1,0 +1,31 @@
+<h2 class="content-title">Profit & Loss Report (Per Item)</h2>
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Item No</th>
+        <th>Item Name</th>
+        <th>Purchased Qty</th>
+        <th>Sold Qty</th>
+        <th>Current Stock</th>
+        <th>COGS (Sold)</th>
+        <th>Revenue</th>
+        <th>Net Profit/Loss</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td>{{ item.itemNo }}</td>
+        <td><strong>{{ item.name }}</strong></td>
+        <td>{{ svc.getStockStats(item.id).purchased }}</td>
+        <td>{{ svc.getStockStats(item.id).sold }}</td>
+        <td>{{ svc.getStockStats(item.id).available }}</td>
+        <td>{{ (svc.getStockStats(item.id).sold * item.purchasePrice) | currency }}</td>
+        <td>{{ (svc.getStockStats(item.id).sold * item.salesPrice) | currency }}</td>
+        <td [style.color]="(svc.getStockStats(item.id).sold * item.salesPrice - svc.getStockStats(item.id).sold * item.purchasePrice) < 0 ? 'var(--danger)' : 'var(--success)'">
+          <strong>{{ ((svc.getStockStats(item.id).sold * item.salesPrice) - (svc.getStockStats(item.id).sold * item.purchasePrice)) | currency }}</strong>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

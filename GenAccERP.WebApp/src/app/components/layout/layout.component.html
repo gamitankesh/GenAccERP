@@ -1,0 +1,29 @@
+<header class="top-navbar">
+  <h1>ERP System Workspace</h1>
+  <div class="user-profile">
+    <span id="currentUserDisplay">Admin User</span>
+    <div class="avatar">A</div>
+  </div>
+</header>
+
+<div class="layout-container">
+  <aside class="sidebar">
+    <ul class="nav-list" id="mainNav">
+      <li class="nav-item" [class.active]="currentTab==='home'" (click)="switchTab('home')"><span>&#8962;</span> Home</li>
+      <li class="nav-item" [class.active]="currentTab==='users'" (click)="switchTab('users')"><span>&#128101;</span> Users</li>
+      <li class="nav-item" [class.active]="currentTab==='categories'" (click)="switchTab('categories')"><span>&#9776;</span> Item Categories</li>
+      <li class="nav-item" [class.active]="currentTab==='purchases'" (click)="switchTab('purchases')"><span>&#128176;</span> Purchases</li>
+      <li class="nav-item" [class.active]="currentTab==='sales'" (click)="switchTab('sales')"><span>&#128722;</span> Sales</li>
+      <li class="nav-item" [class.active]="currentTab==='reports'" (click)="switchTab('reports')"><span>&#128200;</span> Reports</li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <app-home *ngIf="currentTab==='home'"></app-home>
+    <app-users *ngIf="currentTab==='users'"></app-users>
+    <app-categories *ngIf="currentTab==='categories'"></app-categories>
+    <app-purchases *ngIf="currentTab==='purchases'"></app-purchases>
+    <app-sales *ngIf="currentTab==='sales'"></app-sales>
+    <app-reports *ngIf="currentTab==='reports'"></app-reports>
+  </main>
+</div>

@@ -1,0 +1,25 @@
+<h2 class="content-title">Sales Master</h2>
+<div class="toolbar">
+  <button class="btn btn-primary" (click)="addSale()">&#43; Create Sale</button>
+</div>
+<div class="table-container">
+  <table>
+    <thead>
+      <tr><th>Trans ID</th><th>Date</th><th>Item Name</th><th>Quantity</th><th>Unit Price</th><th>Total Revenue</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let s of sales">
+        <td>...{{ s.id.substring(0,6) }}</td>
+        <td>{{ s.date }}</td>
+        <td>{{ (items.find(i=>i.id===s.itemId)?.name) || 'Unknown' }}</td>
+        <td>{{ s.qty }}</td>
+        <td>{{ (items.find(i=>i.id===s.itemId)?.salesPrice) | currency }}</td>
+        <td><strong>{{ (items.find(i=>i.id===s.itemId)?.salesPrice || 0) * s.qty | currency }}</strong></td>
+        <td>
+          <button class="btn btn-action" (click)="">Edit</button>
+          <button class="btn btn-danger" (click)="deleteSale(s.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,25 @@
+<h2 class="content-title">Purchase Master</h2>
+<div class="toolbar">
+  <button class="btn btn-primary" (click)="addPurchase()">&#43; Create Purchase</button>
+</div>
+<div class="table-container">
+  <table>
+    <thead>
+      <tr><th>Trans ID</th><th>Date</th><th>Item Name</th><th>Quantity</th><th>Unit Cost</th><th>Total Cost</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of purchases">
+        <td>...{{ p.id.substring(0,6) }}</td>
+        <td>{{ p.date }}</td>
+        <td>{{ (items.find(i=>i.id===p.itemId)?.name) || 'Unknown' }}</td>
+        <td>{{ p.qty }}</td>
+        <td>{{ (items.find(i=>i.id===p.itemId)?.purchasePrice) | currency }}</td>
+        <td><strong>{{ (items.find(i=>i.id===p.itemId)?.purchasePrice || 0) * p.qty | currency }}</strong></td>
+        <td>
+          <button class="btn btn-action" (click)="">Edit</button>
+          <button class="btn btn-danger" (click)="deletePurchase(p.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
