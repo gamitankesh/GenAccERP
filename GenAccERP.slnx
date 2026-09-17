@@ -1,4 +1,4 @@
 <Solution>
   <Project Path="GenAccERP.DataAccess/GenAccERP.DataAccess.csproj" />
-  <Project Path="GenAccERP/GenAccERP.csproj" />
+  <Project Path="GenAccERP/GenAccERP.API.csproj" />
 </Solution>
