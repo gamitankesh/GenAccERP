@@ -1,0 +1,18 @@
+<div class="content-title">Reports</div>
+<div class="table-container">
+  <table>
+    <thead><tr><th>Item No</th><th>Item</th><th>Purchased</th><th>Sold</th><th>Available</th><th>COGS</th><th>Revenue</th><th>Profit</th></tr></thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td>{{item.itemNo}}</td>
+        <td>{{item.name}}</td>
+        <td>{{ds.getStockStats(item.id).purchased}}</td>
+        <td>{{ds.getStockStats(item.id).sold}}</td>
+        <td>{{ds.getStockStats(item.id).available}}</td>
+        <td>{{(ds.getStockStats(item.id).sold * item.purchasePrice) | number:'1.2-2'}}</td>
+        <td>{{(ds.getStockStats(item.id).sold * item.salesPrice) | number:'1.2-2'}}</td>
+        <td>{{((ds.getStockStats(item.id).sold * item.salesPrice) - (ds.getStockStats(item.id).sold * item.purchasePrice)) | number:'1.2-2'}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
