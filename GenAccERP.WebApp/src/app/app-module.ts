@@ -12,20 +12,20 @@ import { ReportsComponent } from './reports.component';
 import { ModalComponent } from './modal.component';
 
 @NgModule({
-  declarations: [
-    App,
+  // App is an NgModule-owned root component (not standalone) and is declared here.
+  declarations: [ App ],
+  // Standalone components must be imported, not declared.
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    AppRoutingModule,
     MainComponent,
     UsersComponent,
     ItemsComponent,
     PurchasesComponent,
     SalesComponent,
-    ReportsComponent
-    ,ModalComponent
-  ],
-  imports: [
-    BrowserModule,
-    ReactiveFormsModule,
-    AppRoutingModule
+    ReportsComponent,
+    ModalComponent
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
