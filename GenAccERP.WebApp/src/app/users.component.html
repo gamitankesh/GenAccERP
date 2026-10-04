@@ -1,0 +1,27 @@
+<div class="content-title">Users</div>
+<div class="toolbar"><button class="btn btn-primary" (click)="openCreate()">New User</button></div>
+<div class="table-container">
+  <table>
+    <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+    <tbody>
+      <tr *ngFor="let u of users">
+        <td>{{u.username}}</td>
+        <td>{{u.email}}</td>
+        <td>{{u.role}}</td>
+        <td>
+          <button class="btn btn-action" (click)="openEdit(u)">Edit</button>
+          <button class="btn btn-action" (click)="remove(u.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-modal [visible]="userModalVisible" title="User" (close)="closeUserModal()">
+  <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+    <div class="form-group"><label>Username</label><input formControlName="username" class="form-control"></div>
+    <div class="form-group"><label>Email</label><input formControlName="email" class="form-control" type="email"></div>
+    <div class="form-group"><label>Role</label><select formControlName="role" class="form-control"><option>Admin</option><option>User</option></select></div>
+    <div class="modal-footer"><button class="btn btn-secondary" type="button" (click)="closeUserModal()">Cancel</button><button class="btn btn-primary" type="submit">Save</button></div>
+  </form>
+</app-modal>

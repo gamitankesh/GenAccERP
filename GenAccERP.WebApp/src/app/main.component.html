@@ -1,0 +1,35 @@
+<div class="content-title">Dashboard</div>
+
+<div class="dashboard-grid">
+  <div class="summary-card users-card">
+    <div class="card-title">Total Users</div>
+    <div class="card-value">{{totals.users}}</div>
+  </div>
+  <div class="summary-card">
+    <div class="card-title">Total Items</div>
+    <div class="card-value">{{totals.items}}</div>
+  </div>
+  <div class="summary-card purchases-card">
+    <div class="card-title">Total Purchases</div>
+    <div class="card-value">{{totals.purchases}}</div>
+  </div>
+  <div class="summary-card sales-card">
+    <div class="card-title">Total Sales</div>
+    <div class="card-value">{{totals.sales}}</div>
+  </div>
+</div>
+
+<div class="table-container">
+  <table>
+    <thead><tr><th>Item No</th><th>Item</th><th>Purchased</th><th>Sold</th><th>Available</th></tr></thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td>{{item.itemNo}}</td>
+        <td>{{item.name}}</td>
+        <td>{{ds.getStockStats(item.id).purchased}}</td>
+        <td>{{ds.getStockStats(item.id).sold}}</td>
+        <td>{{ds.getStockStats(item.id).available}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

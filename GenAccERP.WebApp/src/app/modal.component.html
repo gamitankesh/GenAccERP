@@ -1,0 +1,11 @@
+<div class="modal-overlay" [class.active]="visible" (click)="onClose()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">{{title}}</div>
+    <div class="modal-body">
+      <ng-content></ng-content>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="onClose()">Cancel</button>
+    </div>
+  </div>
+</div>
