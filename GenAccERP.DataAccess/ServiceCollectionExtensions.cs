@@ -2,6 +2,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using GenAccERP.DataAccess.Data;
+using GenAccERP.DataAccess.Repositories;
+using GenAccERP.DataAccess.Repositories.Interfaces;
 
 namespace GenAccERP.DataAccess
 {
@@ -17,6 +19,7 @@ namespace GenAccERP.DataAccess
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection") ?? DefaultConnectionString;
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+            AddRepositories(services);
             return services;
         }
 
@@ -26,7 +29,18 @@ namespace GenAccERP.DataAccess
         public static IServiceCollection AddDataAccess(this IServiceCollection services, string connectionString)
         {
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+            AddRepositories(services);
             return services;
+        }
+
+        private static void AddRepositories(IServiceCollection services)
+        {
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IItemRepository, ItemRepository>();
+            services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+            services.AddScoped<ISalesRepository, SalesRepository>();
+            services.AddScoped<IReportRepository, ReportRepository>();
         }
     }
 }

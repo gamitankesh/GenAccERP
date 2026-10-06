@@ -1,7 +1,6 @@
-using GenAccERP.DataAccess.Data;
 using GenAccERP.DataAccess.Models;
+using GenAccERP.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace GenAccERP.Controllers
 {
@@ -9,12 +8,16 @@ namespace GenAccERP.Controllers
     [ApiController]
     public class ReportsController : ControllerBase
     {
-        private readonly AppDbContext _db;
-        public ReportsController(AppDbContext db) { _db = db; }
+        private readonly IReportService _service;
+
+        public ReportsController(IReportService service)
+        {
+            _service = service;
+        }
 
         // GET: api/reports/item-profit-loss
         [HttpGet("item-profit-loss")]
-        public async Task<ActionResult<IEnumerable<VwItemProfitAndLoss>>> ItemProfitAndLoss()
-            => Ok(await _db.VwItemProfitAndLosses.AsNoTracking().ToListAsync());
+        public async Task<ActionResult<IEnumerable<VwItemProfitAndLoss>>> ItemProfitAndLoss() =>
+            this.ToActionResult(await _service.GetItemProfitAndLossAsync());
     }
 }

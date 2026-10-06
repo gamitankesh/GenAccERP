@@ -1,4 +1,6 @@
 using GenAccERP.DataAccess;
+using GenAccERP.Services.Implementations;
+using GenAccERP.Services.Interfaces;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,14 @@ builder.Services.AddControllers()
     });
 // Register EF Core DbContext and data access
 builder.Services.AddDataAccess(builder.Configuration);
+
+// Application services
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+builder.Services.AddScoped<ISalesService, SalesService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 builder.Services.AddCors(o => o.AddPolicy("WebApp", p => p
     .WithOrigins(builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? new[] { "http://localhost:4200", "http://127.0.0.1:4200" })
