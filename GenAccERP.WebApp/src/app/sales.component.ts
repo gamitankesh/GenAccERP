@@ -1,9 +1,13 @@
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ModalComponent } from './modal.component';
 import { Component, OnInit } from '@angular/core';
 import { DataService } from './data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-sales',
+  imports: [CommonModule, ReactiveFormsModule, ModalComponent],
   templateUrl: './sales.component.html'
 })
 export class SalesComponent implements OnInit {
