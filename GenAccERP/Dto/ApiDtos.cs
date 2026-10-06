@@ -37,3 +37,21 @@ namespace GenAccERP.Dto
         UserDto? CreatedByUser
     );
 }
+
+namespace GenAccERP.Dto
+{
+    [ExcludeFromCodeCoverage]
+    public record PurchaseLineDto(Guid PurchaseDetailId, Guid ItemId, int Quantity, decimal UnitPrice, decimal? LineTotal);
+
+    [ExcludeFromCodeCoverage]
+    public record PurchaseDto(Guid PurchaseId, DateTime PurchaseDate, string? SupplierName, decimal TotalAmount, DateTime CreatedDate, System.Collections.Generic.List<PurchaseLineDto> Lines);
+
+    [ExcludeFromCodeCoverage]
+    public record SaleLineDto(Guid SalesDetailId, Guid ItemId, int Quantity, decimal UnitPrice, decimal? LineTotal);
+
+    [ExcludeFromCodeCoverage]
+    public record SaleDto(Guid SaleId, DateTime SaleDate, string? CustomerName, decimal TotalAmount, DateTime CreatedDate, System.Collections.Generic.List<SaleLineDto> Lines);
+
+    [ExcludeFromCodeCoverage]
+    public record StockDto(Guid ItemId, int Purchased, int Sold, int Available);
+}

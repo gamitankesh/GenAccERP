@@ -104,6 +104,35 @@ namespace GenAccERP.Controllers
 
             return CreatedAtAction(nameof(Get), new { id = category.CategoryId }, resultDto);
         }
+
+        // PUT: api/category/{id}
+        [HttpPut("{id}")]
+        public async Task<ActionResult<CategoryDto>> Update(Guid id, [FromBody] CreateCategoryRequest dto)
+        {
+            if (dto == null || string.IsNullOrWhiteSpace(dto.CategoryName))
+                return BadRequest("CategoryName is required.");
+            var category = await _db.ItemCategories.FindAsync(id);
+            if (category == null)
+                return NotFound();
+            category.CategoryName = dto.CategoryName;
+            category.ModifiedBy = dto.CreatedBy;
+            category.ModifiedDate = DateTime.UtcNow;
+            await _db.SaveChangesAsync();
+            return Ok(new CategoryDto(category.CategoryId, category.CategoryName, category.CreatedBy, category.CreatedDate, null));
+        }
+
+        // DELETE: api/category/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var category = await _db.ItemCategories.FindAsync(id);
+            if (category == null)
+                return NotFound();
+            _db.ItemCategories.Remove(category);
+            try { await _db.SaveChangesAsync(); }
+            catch (DbUpdateException) { return Conflict("Category is used by items and cannot be deleted."); }
+            return NoContent();
+        }
     }
 
     public class CreateCategoryRequest

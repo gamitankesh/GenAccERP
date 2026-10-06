@@ -14,6 +14,11 @@ builder.Services.AddControllers()
 // Register EF Core DbContext and data access
 builder.Services.AddDataAccess(builder.Configuration);
 
+builder.Services.AddCors(o => o.AddPolicy("WebApp", p => p
+    .WithOrigins(builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? new[] { "http://localhost:4200", "http://127.0.0.1:4200" })
+    .AllowAnyHeader()
+    .AllowAnyMethod()));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -28,6 +33,8 @@ app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GenAccERP A
 app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.UseHttpsRedirection();
+
+app.UseCors("WebApp");
 
 app.UseAuthorization();
 

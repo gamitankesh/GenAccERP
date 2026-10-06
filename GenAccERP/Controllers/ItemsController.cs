@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +19,68 @@ namespace GenAccERP.Controllers
         public ItemsController(AppDbContext db)
         {
             _db = db;
+        }
+
+        private static ItemDto ToDto(ItemMaster i) => new ItemDto(i.ItemId, i.CategoryId, i.ItemNo, i.ItemName, i.ItemDescription, i.PurchasePrice, i.SalesPrice, i.CurrentStock, i.Category?.CategoryName, i.CreatedByNavigation != null ? new UserDto(i.CreatedByNavigation.UserId, i.CreatedByNavigation.Username, i.CreatedByNavigation.Email, i.CreatedByNavigation.Role) : null);
+
+        // GET: api/items
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ItemDto>>> GetAll()
+        {
+            var items = await _db.ItemMasters.AsNoTracking()
+                .Include(i => i.Category)
+                .Include(i => i.CreatedByNavigation)
+                .OrderBy(i => i.ItemNo)
+                .ToListAsync();
+            return Ok(items.Select(ToDto));
+        }
+
+        // GET: api/items/{id}/stock
+        [HttpGet("{id}/stock")]
+        public async Task<ActionResult<StockDto>> GetStock(Guid id)
+        {
+            if (!await _db.ItemMasters.AnyAsync(i => i.ItemId == id))
+                return NotFound();
+            var purchased = await _db.PurchaseDetails.Where(d => d.ItemId == id).SumAsync(d => (int?)d.Quantity) ?? 0;
+            var sold = await _db.SalesDetails.Where(d => d.ItemId == id).SumAsync(d => (int?)d.Quantity) ?? 0;
+            return Ok(new StockDto(id, purchased, sold, purchased - sold));
+        }
+
+        // PUT: api/items/{id}
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ItemDto>> Update(Guid id, [FromBody] UpdateItemRequest dto)
+        {
+            var item = await _db.ItemMasters.FindAsync(id);
+            if (item == null)
+                return NotFound();
+            if (dto.CategoryId != null && dto.CategoryId != Guid.Empty)
+            {
+                if (!await _db.ItemCategories.AnyAsync(c => c.CategoryId == dto.CategoryId))
+                    return BadRequest("Category not found. Provide a valid CategoryId.");
+                item.CategoryId = dto.CategoryId.Value;
+            }
+            if (dto.ItemNo != null) item.ItemNo = dto.ItemNo;
+            if (dto.ItemName != null) item.ItemName = dto.ItemName;
+            if (dto.ItemDescription != null) item.ItemDescription = dto.ItemDescription;
+            if (dto.PurchasePrice != null) item.PurchasePrice = dto.PurchasePrice.Value;
+            if (dto.SalesPrice != null) item.SalesPrice = dto.SalesPrice.Value;
+            item.ModifiedBy = dto.ModifiedBy;
+            item.ModifiedDate = DateTime.UtcNow;
+            await _db.SaveChangesAsync();
+            return await Get(id);
+        }
+
+        // DELETE: api/items/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var item = await _db.ItemMasters.FindAsync(id);
+            if (item == null)
+                return NotFound();
+            _db.ItemMasters.Remove(item);
+            try { await _db.SaveChangesAsync(); }
+            catch (DbUpdateException) { return Conflict("Item is used in purchases or sales and cannot be deleted."); }
+            return NoContent();
         }
 
         // POST: api/items
@@ -94,6 +158,17 @@ namespace GenAccERP.Controllers
 
             return Ok(dto);
         }
+    }
+
+    public class UpdateItemRequest
+    {
+        public Guid? CategoryId { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public string? ItemNo { get; set; }
+        public string? ItemName { get; set; }
+        public string? ItemDescription { get; set; }
+        public decimal? PurchasePrice { get; set; }
+        public decimal? SalesPrice { get; set; }
     }
 
     public class CreateItemRequest
