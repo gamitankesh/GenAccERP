@@ -1,6 +1,7 @@
 import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
+import { provideHttpClient } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { MainComponent } from './main.component';
@@ -29,6 +30,7 @@ import { ModalComponent } from './modal.component';
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
+    provideHttpClient(),
   ],
   bootstrap: [App]
 })

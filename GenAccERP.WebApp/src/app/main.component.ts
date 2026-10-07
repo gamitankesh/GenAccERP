@@ -1,8 +1,12 @@
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ModalComponent } from './modal.component';
 import { Component, OnInit } from '@angular/core';
 import { DataService } from './data.service';
 
 @Component({
   selector: 'app-main',
+  imports: [CommonModule],
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })
