@@ -10,7 +10,7 @@ namespace GenAccERP.DataAccess.Data
         {
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
             // Ensure Initial Catalog is set to GenAccERP
-            var connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=GenAccERP;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Application Name=\"SQL Server Management Studio\";Command Timeout=0";
+            var connectionString = "Server=localhost\\SQLEXPRESS;Database=GenAccERP;Trusted_Connection=True;MultipleActiveResultSets=True;";
             optionsBuilder.UseSqlServer(connectionString);
             return new AppDbContext(optionsBuilder.Options);
         }

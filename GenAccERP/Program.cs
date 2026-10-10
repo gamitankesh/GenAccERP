@@ -2,6 +2,8 @@ using GenAccERP.DataAccess;
 using GenAccERP.Services.Implementations;
 using GenAccERP.Services.Interfaces;
 using System.Text.Json.Serialization;
+using GenAccERP.DataAccess.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,5 +51,12 @@ app.UseCors("WebApp");
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Ensure database is created and all migrations are applied on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 
 app.Run();

@@ -9,7 +9,7 @@ namespace GenAccERP.DataAccess
 {
     public static class ServiceCollectionExtensions
     {
-        private const string DefaultConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=GenAccERP;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Application Name=\"SQL Server Management Studio\";Command Timeout=0";
+        private const string DefaultConnectionString = "Server=localhost\\SQLEXPRESS;Database=GenAccERP;Trusted_Connection=True;MultipleActiveResultSets=True;Encrypt=False;TrustServerCertificate=True;";
 
         /// <summary>
         /// Registers AppDbContext using the connection string named "DefaultConnection" from configuration.
