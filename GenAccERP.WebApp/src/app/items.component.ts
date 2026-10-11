@@ -29,7 +29,7 @@ export class ItemsComponent implements OnInit {
 
   async save() {
     if(this.itemForm.invalid) return;
-    const data = this.itemForm.value;
+    const data = { ...this.itemForm.value, purchasePrice: Number(this.itemForm.value.purchasePrice) || 0, salesPrice: Number(this.itemForm.value.salesPrice) || 0 };
     this.modalVisible = false;
     if(this.editingId) await this.ds.updateItem(this.editingId, data);
     else await this.ds.addItem(data);
@@ -37,4 +37,15 @@ export class ItemsComponent implements OnInit {
   }
 
   remove(id: string) { if(confirm('Delete item?')) this.ds.deleteItem(id); }
+
+  onlyNumber(e: KeyboardEvent) {
+    const input = e.target as HTMLInputElement;
+    const ok = /^[0-9]$/.test(e.key) || (e.key === '.' && !input.value.includes('.'));
+    if (!ok) e.preventDefault();
+  }
+
+  onlyNumberPaste(e: ClipboardEvent) {
+    const text = e.clipboardData?.getData('text') ?? '';
+    if (!/^\d*\.?\d*$/.test(text)) e.preventDefault();
+  }
 }
