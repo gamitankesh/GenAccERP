@@ -1,38 +1,154 @@
-/* Global styles and Bootstrap overrides for the app */
-
+/* GenAccERP global design system */
 @import url('https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css');
 
 :root {
-  --app-bg: #faf9f8;
-  --app-border: #e1dfdd;
-  --primary: #0078d4;
+  --erp-primary: #1f4e79;
+  --erp-primary-dark: #163a5a;
+  --erp-accent: #2e86de;
+  --erp-bg: #f4f6f9;
+  --erp-surface: #ffffff;
+  --erp-border: #dde3ea;
+  --erp-text: #1f2933;
+  --erp-muted: #6b7785;
+  --erp-radius: 6px;
 }
 
-html, body {
-  height: 100%;
-  margin: 0;
-}
+html, body { height: 100%; margin: 0; }
 
 body {
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background: var(--app-bg);
+  background: var(--erp-bg);
+  color: var(--erp-text);
+  font-size: 14px;
 }
 
-/* App layout */
-.top-navbar { background: var(--primary); color: #fff; height: 48px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; }
-.layout-container { display:flex; height:calc(100% - 48px); }
-.sidebar { width:220px; background:var(--app-bg); border-right:1px solid var(--app-border); padding-top:8px; }
-.nav-list { list-style:none; padding:0; margin:0; }
-.nav-item { padding:10px 16px; }
-.nav-item a { color:inherit; text-decoration:none; display:block; }
-.main-content { flex:1; padding:20px 24px; overflow:auto; }
-.toolbar { margin-bottom:12px; }
-.table-container { border:1px solid var(--app-border); border-radius:4px; overflow:auto; padding:8px; background:#fff; }
+/* ---------- Shell: top bar, sidebar, content ---------- */
+.app-topbar {
+  background: var(--erp-primary);
+  color: #fff;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.app-brand { font-size: 18px; font-weight: 600; letter-spacing: 0.3px; }
+.app-user { font-size: 13px; opacity: 0.9; }
 
-.btn-primary { background: var(--primary); border-color: var(--primary); color:#fff; }
-.btn-action { margin-right:6px; }
+.app-layout { display: flex; height: calc(100% - 56px); }
 
-/* Modal adjustments */
-.modal-backdrop.show { opacity: 0.5; }
-.modal-content { border-radius:6px; }
+.app-sidebar {
+  width: 220px;
+  background: var(--erp-surface);
+  border-right: 1px solid var(--erp-border);
+  padding: 12px 0;
+  flex-shrink: 0;
+}
+.app-nav { list-style: none; padding: 0; margin: 0; }
+.app-nav a {
+  display: block;
+  padding: 10px 20px;
+  color: var(--erp-text);
+  text-decoration: none;
+  border-left: 3px solid transparent;
+}
+.app-nav a:hover { background: var(--erp-bg); color: var(--erp-primary); }
+.app-nav a.active {
+  background: #eaf2fb;
+  color: var(--erp-primary);
+  border-left-color: var(--erp-accent);
+  font-weight: 600;
+}
 
+.app-main { flex: 1; padding: 24px 28px; overflow: auto; }
+
+/* ---------- Page header ---------- */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.content-title { font-size: 22px; font-weight: 600; color: var(--erp-primary-dark); margin: 0; }
+
+/* ---------- Buttons ---------- */
+.btn { border-radius: var(--erp-radius); font-size: 13px; }
+.btn-primary { background: var(--erp-primary); border-color: var(--erp-primary); color: #fff; }
+.btn-primary:hover { background: var(--erp-primary-dark); border-color: var(--erp-primary-dark); color: #fff; }
+.btn-secondary { background: #e9edf2; border-color: #e9edf2; color: var(--erp-text); }
+.btn-secondary:hover { background: #dbe1e8; border-color: #dbe1e8; color: var(--erp-text); }
+.btn-action { margin-right: 6px; }
+
+/* ---------- Cards (dashboard) ---------- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.summary-card {
+  background: var(--erp-surface);
+  border: 1px solid var(--erp-border);
+  border-left: 4px solid var(--erp-accent);
+  border-radius: var(--erp-radius);
+  padding: 16px 18px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.summary-card.users-card { border-left-color: #6c5ce7; }
+.summary-card.purchases-card { border-left-color: #e67e22; }
+.summary-card.sales-card { border-left-color: #27ae60; }
+.card-title { font-size: 13px; color: var(--erp-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+.card-value { font-size: 26px; font-weight: 700; margin-top: 6px; color: var(--erp-text); }
+
+/* ---------- Tables ---------- */
+.table-container {
+  background: var(--erp-surface);
+  border: 1px solid var(--erp-border);
+  border-radius: var(--erp-radius);
+  overflow: auto;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  background: #f7f9fb;
+  color: var(--erp-muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--erp-border);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 11px 16px;
+  border-bottom: 1px solid #eef1f5;
+  vertical-align: middle;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: #f9fbfd; }
+
+/* ---------- Forms ---------- */
+.form-group { margin-bottom: 14px; }
+.form-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: var(--erp-text);
+}
+.form-control {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #c8d0da;
+  border-radius: var(--erp-radius);
+  font-size: 14px;
+  background: #fff;
+}
+.form-control:focus {
+  outline: none;
+  border-color: var(--erp-accent);
+  box-shadow: 0 0 0 3px rgba(46,134,222,0.15);
+}
