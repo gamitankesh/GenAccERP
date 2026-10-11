@@ -1,14 +1,20 @@
-<div class="content-title">Purchases</div>
-<div class="toolbar"><button class="btn btn-primary" (click)="openCreate()">New Purchase</button></div>
+<div class="page-header">
+  <h1 class="content-title">Purchases</h1>
+  <button type="button" class="btn btn-primary" (click)="openCreate()">New Purchase</button>
+</div>
+
 <div class="table-container">
   <table>
-    <thead><tr><th>Date</th><th>Item</th><th>Quantity</th><th>Actions</th></tr></thead>
+    <thead><tr><th>Date</th><th>Item</th><th>Quantity</th><th class="text-end">Actions</th></tr></thead>
     <tbody>
       <tr *ngFor="let p of purchases">
         <td>{{p.date}}</td>
         <td>{{items.find(i=>i.id===p.itemId)?.name}}</td>
         <td>{{p.qty}}</td>
-        <td><button class="btn btn-action" (click)="openEdit(p)">Edit</button> <button class="btn btn-action" (click)="remove(p.id)">Delete</button></td>
+        <td class="text-end">
+          <button type="button" class="btn btn-sm btn-outline-secondary btn-action" (click)="openEdit(p)">Edit</button>
+          <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(p.id)">Delete</button>
+        </td>
       </tr>
     </tbody>
   </table>

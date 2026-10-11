@@ -1,17 +1,20 @@
-<div class="content-title">Items</div>
-<div class="toolbar"><button class="btn btn-primary" (click)="openCreate()">New Item</button></div>
+<div class="page-header">
+  <h1 class="content-title">Items</h1>
+  <button type="button" class="btn btn-primary" (click)="openCreate()">New Item</button>
+</div>
+
 <div class="table-container">
   <table>
-    <thead><tr><th>Item No</th><th>Name</th><th>Purchase</th><th>Sales</th><th>Actions</th></tr></thead>
+    <thead><tr><th>Item No</th><th>Name</th><th>Purchase</th><th>Sales</th><th class="text-end">Actions</th></tr></thead>
     <tbody>
       <tr *ngFor="let i of items">
         <td>{{i.itemNo}}</td>
         <td>{{i.name}}</td>
         <td>{{i.purchasePrice}}</td>
         <td>{{i.salesPrice}}</td>
-        <td>
-          <button class="btn btn-action" (click)="openEdit(i)">Edit</button>
-          <button class="btn btn-action" (click)="remove(i.id)">Delete</button>
+        <td class="text-end">
+          <button type="button" class="btn btn-sm btn-outline-secondary btn-action" (click)="openEdit(i)">Edit</button>
+          <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(i.id)">Delete</button>
         </td>
       </tr>
     </tbody>
