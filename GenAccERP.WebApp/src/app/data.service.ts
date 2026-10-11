@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ApplicationRef, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 
@@ -17,7 +17,7 @@ export class DataService {
   private purchases$ = new BehaviorSubject<any[]>([]);
   private sales$ = new BehaviorSubject<any[]>([]);
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private appRef: ApplicationRef) {
     this.loadAll();
   }
 
