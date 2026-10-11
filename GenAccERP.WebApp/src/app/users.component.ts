@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ModalComponent } from './modal.component';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DataService } from './data.service';
+import { ListRefreshService } from './list-refresh.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -10,15 +11,18 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   imports: [CommonModule, ReactiveFormsModule, ModalComponent],
   templateUrl: './users.component.html'
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements OnInit, OnDestroy {
+  private unregister: Array<() => void> = [];
   users: any[] = [];
   userForm!: FormGroup;
   userModalVisible = false;
   editingId: string | null = null;
 
-  constructor(public ds: DataService, private fb: FormBuilder) {}
+  constructor(public ds: DataService, private fb: FormBuilder, private lr: ListRefreshService) {}
 
   ngOnInit(): void {
+    this.unregister.push(this.lr.register('users', () => this.ds.loadUsers()));
+
     this.ds.getUsers().subscribe(u => this.users = u);
     this.userForm = this.fb.group({ username: ['', Validators.required], email: ['', [Validators.required, Validators.email]], role: ['User', Validators.required] });
   }
@@ -45,4 +49,6 @@ export class UsersComponent implements OnInit {
   closeUserModal() { this.userModalVisible = false; }
 
   remove(id: string) { if(confirm('Delete user?')) this.ds.deleteUser(id); }
+
+  ngOnDestroy() { this.unregister.forEach(u => u()); }
 }

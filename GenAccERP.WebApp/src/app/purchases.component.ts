@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ModalComponent } from './modal.component';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DataService } from './data.service';
+import { ListRefreshService } from './list-refresh.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -10,15 +11,19 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   imports: [CommonModule, ReactiveFormsModule, ModalComponent],
   templateUrl: './purchases.component.html'
 })
-export class PurchasesComponent implements OnInit {
+export class PurchasesComponent implements OnInit, OnDestroy {
+  private unregister: Array<() => void> = [];
   purchases: any[] = [];
   items: any[] = [];
   purchaseForm!: FormGroup;
   modalVisible = false;
   editingId: string | null = null;
 
-  constructor(public ds: DataService, private fb: FormBuilder) {}
-  ngOnInit(): void { this.ds.getPurchases().subscribe(p => this.purchases = p); this.ds.getItems().subscribe(i => this.items = i);
+  constructor(public ds: DataService, private fb: FormBuilder, private lr: ListRefreshService) {}
+  ngOnInit(): void {
+    this.unregister.push(this.lr.register('purchases', () => this.ds.loadPurchases()));
+    this.unregister.push(this.lr.register('items', () => this.ds.loadItems()));
+    this.ds.getPurchases().subscribe(p => this.purchases = p); this.ds.getItems().subscribe(i => this.items = i);
     this.purchaseForm = this.fb.group({ date: [new Date().toISOString().slice(0,10), Validators.required], itemId: ['', Validators.required], qty: [1, [Validators.required, Validators.min(1)]] }); }
 
   openCreate() { this.editingId = null; this.purchaseForm.reset({ date: new Date().toISOString().slice(0,10), qty: 1, itemId: this.items[0]?.id || '' }); this.modalVisible = true; }
@@ -34,4 +39,6 @@ export class PurchasesComponent implements OnInit {
   }
 
   remove(id: string) { if(confirm('Delete purchase?')) this.ds.deletePurchase(id); }
+
+  ngOnDestroy() { this.unregister.forEach(u => u()); }
 }
