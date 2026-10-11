@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { ListRefreshService } from './list-refresh.service';
 
 // Base URL of the GenAccERP backend API
 export const API_BASE_URL = 'http://localhost:5277/api';
@@ -17,7 +18,12 @@ export class DataService {
   private purchases$ = new BehaviorSubject<any[]>([]);
   private sales$ = new BehaviorSubject<any[]>([]);
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private listRefresh: ListRefreshService) {
+    this.listRefresh.register('users', () => this.loadUsers());
+    this.listRefresh.register('categories', () => this.loadCategories());
+    this.listRefresh.register('items', () => this.loadItems());
+    this.listRefresh.register('purchases', () => this.loadPurchases());
+    this.listRefresh.register('sales', () => this.loadSales());
     this.loadAll();
   }
 
@@ -68,23 +74,23 @@ export class DataService {
 
   // Users
   async addUser(u: any) {
-    try { await firstValueFrom(this.http.post(`${API_BASE_URL}/users`, u)); } catch (e) { this.fail(e); }
-    await this.loadUsers();
+    try { await firstValueFrom(this.http.post(`${API_BASE_URL}/users`, u)); } catch (e) { this.fail(e); return; }
+    await this.listRefresh.refreshList('users');
   }
   async updateUser(id: string, data: any) {
-    try { await firstValueFrom(this.http.put(`${API_BASE_URL}/users/${id}`, data)); } catch (e) { this.fail(e); }
-    await this.loadUsers();
+    try { await firstValueFrom(this.http.put(`${API_BASE_URL}/users/${id}`, data)); } catch (e) { this.fail(e); return; }
+    await this.listRefresh.refreshList('users');
   }
   async deleteUser(id: string) {
-    try { await firstValueFrom(this.http.delete(`${API_BASE_URL}/users/${id}`)); } catch (e) { this.fail(e); }
-    await this.loadUsers();
+    try { await firstValueFrom(this.http.delete(`${API_BASE_URL}/users/${id}`)); } catch (e) { this.fail(e); return; }
+    await this.listRefresh.refreshList('users');
   }
 
   // Categories
   async addCategory(name: string) {
     try {
       const c = await firstValueFrom(this.http.post<any>(`${API_BASE_URL}/category`, { categoryName: name }));
-      await this.loadCategories();
+      await this.listRefresh.refreshList('categories');
       return this.toCategory(c);
     } catch (e) { this.fail(e); return null; }
   }
@@ -94,46 +100,46 @@ export class DataService {
     return { categoryId: i.categoryId, itemNo: i.itemNo, itemName: i.name, itemDescription: i.desc, purchasePrice: i.purchasePrice, salesPrice: i.salesPrice };
   }
   async addItem(i: any) {
-    try { await firstValueFrom(this.http.post(`${API_BASE_URL}/items`, this.itemPayload(i))); } catch (e) { this.fail(e); }
-    await this.loadItems();
+    try { await firstValueFrom(this.http.post(`${API_BASE_URL}/items`, this.itemPayload(i))); } catch (e) { this.fail(e); return; }
+    await this.listRefresh.refreshList('items');
   }
   async updateItem(id: string, data: any) {
-    try { await firstValueFrom(this.http.put(`${API_BASE_URL}/items/${id}`, this.itemPayload(data))); } catch (e) { this.fail(e); }
-    await this.loadItems();
+    try { await firstValueFrom(this.http.put(`${API_BASE_URL}/items/${id}`, this.itemPayload(data))); } catch (e) { this.fail(e); return; }
+    await this.listRefresh.refreshList('items');
   }
   async deleteItem(id: string) {
-    try { await firstValueFrom(this.http.delete(`${API_BASE_URL}/items/${id}`)); } catch (e) { this.fail(e); }
-    await this.loadItems();
+    try { await firstValueFrom(this.http.delete(`${API_BASE_URL}/items/${id}`)); } catch (e) { this.fail(e); return; }
+    await this.listRefresh.refreshList('items');
   }
 
   // Purchases (stock is maintained by the database)
   private txPayload(p: any) { return { itemId: p.itemId, quantity: p.qty, purchaseDate: p.date }; }
   async addPurchase(p: any) {
-    try { await firstValueFrom(this.http.post(`${API_BASE_URL}/purchases`, this.txPayload(p))); } catch (e) { this.fail(e); }
-    await Promise.all([this.loadPurchases(), this.loadItems()]);
+    try { await firstValueFrom(this.http.post(`${API_BASE_URL}/purchases`, this.txPayload(p))); } catch (e) { this.fail(e); return; }
+    await this.listRefresh.refreshList('purchases', 'items');
   }
   async updatePurchase(id: string, data: any) {
-    try { await firstValueFrom(this.http.put(`${API_BASE_URL}/purchases/${id}`, this.txPayload(data))); } catch (e) { this.fail(e); }
-    await Promise.all([this.loadPurchases(), this.loadItems()]);
+    try { await firstValueFrom(this.http.put(`${API_BASE_URL}/purchases/${id}`, this.txPayload(data))); } catch (e) { this.fail(e); return; }
+    await this.listRefresh.refreshList('purchases', 'items');
   }
   async deletePurchase(id: string) {
-    try { await firstValueFrom(this.http.delete(`${API_BASE_URL}/purchases/${id}`)); } catch (e) { this.fail(e); }
-    await Promise.all([this.loadPurchases(), this.loadItems()]);
+    try { await firstValueFrom(this.http.delete(`${API_BASE_URL}/purchases/${id}`)); } catch (e) { this.fail(e); return; }
+    await this.listRefresh.refreshList('purchases', 'items');
   }
 
   // Sales
   private salePayload(s: any) { return { itemId: s.itemId, quantity: s.qty, saleDate: s.date }; }
   async addSale(s: any) {
-    try { await firstValueFrom(this.http.post(`${API_BASE_URL}/sales`, this.salePayload(s))); } catch (e) { this.fail(e); }
-    await Promise.all([this.loadSales(), this.loadItems()]);
+    try { await firstValueFrom(this.http.post(`${API_BASE_URL}/sales`, this.salePayload(s))); } catch (e) { this.fail(e); return; }
+    await this.listRefresh.refreshList('sales', 'items');
   }
   async updateSale(id: string, data: any) {
-    try { await firstValueFrom(this.http.put(`${API_BASE_URL}/sales/${id}`, this.salePayload(data))); } catch (e) { this.fail(e); }
-    await Promise.all([this.loadSales(), this.loadItems()]);
+    try { await firstValueFrom(this.http.put(`${API_BASE_URL}/sales/${id}`, this.salePayload(data))); } catch (e) { this.fail(e); return; }
+    await this.listRefresh.refreshList('sales', 'items');
   }
   async deleteSale(id: string) {
-    try { await firstValueFrom(this.http.delete(`${API_BASE_URL}/sales/${id}`)); } catch (e) { this.fail(e); }
-    await Promise.all([this.loadSales(), this.loadItems()]);
+    try { await firstValueFrom(this.http.delete(`${API_BASE_URL}/sales/${id}`)); } catch (e) { this.fail(e); return; }
+    await this.listRefresh.refreshList('sales', 'items');
   }
 
   // Query helpers (computed from API data loaded into the cache)
