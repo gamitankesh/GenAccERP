@@ -1,16 +1,19 @@
-<div class="content-title">Users</div>
-<div class="toolbar"><button class="btn btn-primary" (click)="openCreate()">New User</button></div>
+<div class="page-header">
+  <h1 class="content-title">Users</h1>
+  <button type="button" class="btn btn-primary" (click)="openCreate()">New User</button>
+</div>
+
 <div class="table-container">
   <table>
-    <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+    <thead><tr><th>Username</th><th>Email</th><th>Role</th><th class="text-end">Actions</th></tr></thead>
     <tbody>
       <tr *ngFor="let u of users">
         <td>{{u.username}}</td>
         <td>{{u.email}}</td>
         <td>{{u.role}}</td>
-        <td>
-          <button class="btn btn-action" (click)="openEdit(u)">Edit</button>
-          <button class="btn btn-action" (click)="remove(u.id)">Delete</button>
+        <td class="text-end">
+          <button type="button" class="btn btn-sm btn-outline-secondary btn-action" (click)="openEdit(u)">Edit</button>
+          <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(u.id)">Delete</button>
         </td>
       </tr>
     </tbody>
